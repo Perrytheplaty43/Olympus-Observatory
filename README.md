@@ -78,6 +78,7 @@ Software to remotely control a OM-D EM10 MKIII
 ```
 ===End===
 ### Video Frame
+Port: 18543 -> 28488
 `19545	27.040805	192.168.0.10	192.168.0.3	UDP	1514	18543 → 28488 Len=1472`
 ```
 0000   10 93 e9 0e d2 fe e8 e8 b7 f6 58 fd 08 00 45 00   ..........X...E.
