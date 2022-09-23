@@ -72,7 +72,8 @@ function inter() {
                     'Host': cameraIP,
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Encoding': 'identity',
-                    'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+                    'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)',
+                    'Connection': 'keep-alive'
                 }
             }).catch(error => console.log('error:', error))
             await new Promise(r => setTimeout(r, shutterSpeed * 1000));
