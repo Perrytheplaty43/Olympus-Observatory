@@ -1,0 +1,20 @@
+{
+  "name": "olympus-observatory",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "control console for the OOO",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Perrytheplaty43/Olympus-Observatory.git"
+  },
+  "author": "Alexander Bakalov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Perrytheplaty43/Olympus-Observatory/issues"
+  },
+  "homepage": "https://github.com/Perrytheplaty43/Olympus-Observatory#readme"
+}
