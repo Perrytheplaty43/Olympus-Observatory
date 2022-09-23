@@ -1,4 +1,3 @@
-import { initial } from 'lodash';
 import fetch from 'node-fetch'
 
 import readline from 'readline'
