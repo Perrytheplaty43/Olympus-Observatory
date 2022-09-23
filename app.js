@@ -1,3 +1,4 @@
+import { initial } from 'lodash';
 import fetch from 'node-fetch'
 
 import readline from 'readline'
@@ -11,7 +12,8 @@ let cameraIP = 'http://192.168.0.10'
 
 prompt()
 
-function prompt() {
+async function prompt() {
+    await init()
     rl.question(`Olympus-Observatory-Console>`, input => {
         if (input.includes("shutter")) {
             changeShutterSpeed(parseInt(input.substring(8)))
@@ -23,12 +25,30 @@ function prompt() {
     })
 }
 
+async function init() {
+    await fetch(`${cameraIP}/get_connectmode.cgi`, {
+        method: 'get',
+        headers: {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding': 'identity',
+            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+        }
+    })
+
+    await fetch(`${cameraIP}/get_cammode.cgi?mode=play`, {
+        method: 'get',
+        headers: {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding': 'identity',
+            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+        }
+    })
+}
+
 function changeISO(iso) {
     fetch(`${cameraIP}/set_camprop.cgi?prop=set&propname=isospeedvalue`, {
         method: 'post',
-        headers: {
-            body: `<?xml version="1.0"?><set><value>${iso}</value></set>`
-        }
+        body: `<?xml version="1.0"?><set><value>${iso}</value></set>`
     })
         .catch(error => console.log('error:', error))
         .then(() => {
