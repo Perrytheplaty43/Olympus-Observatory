@@ -7,7 +7,7 @@ let rl = readline.createInterface({
 });
 
 let shutterSpeed = 10
-let cameraIP = 'http://192.168.0.10'
+let cameraIP = '192.168.0.10'
 
 prompt()
 
@@ -25,7 +25,7 @@ async function prompt() {
 }
 
 async function init() {
-    await fetch(`${cameraIP}/get_connectmode.cgi`, {
+    await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -34,7 +34,7 @@ async function init() {
         }
     })
 
-    await fetch(`${cameraIP}/get_cammode.cgi?mode=play`, {
+    await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=play`, {
         method: 'get',
         headers: {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -45,7 +45,7 @@ async function init() {
 }
 
 function changeISO(iso) {
-    fetch(`${cameraIP}/set_camprop.cgi?prop=set&propname=isospeedvalue`, {
+    fetch(`http://${cameraIP}/set_camprop.cgi?prop=set&propname=isospeedvalue`, {
         method: 'post',
         body: `<?xml version="1.0"?><set><value>${iso}</value></set>`
     })
@@ -66,16 +66,17 @@ function inter() {
     rl.question('Number of shoots: ', async shot => {
         shots = shot
         for (let i = 1; i <= shots; i++) {
-            let res = await fetch(`${cameraIP}/exec_takemotion.cgi?com=starttake`, {
+            let res = await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=starttake`, {
                 method: 'get',
                 headers: {
+                    'Host': cameraIP,
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Encoding': 'identity',
                     'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
                 }
             }).catch(error => console.log('error:', error))
             await new Promise(r => setTimeout(r, shutterSpeed * 1000));
-            await fetch(`${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
+            await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
                 method: 'get',
                 headers: {
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
