@@ -29,10 +29,7 @@ let interBar = new cliProgress.SingleBar({
 
 prompt()
 /*
-taking more than one image doesnt work
-info breaks
 estimated time of imagine finish is broken
-round the time till imaging
 */
 async function prompt() {
     if (firstRun) await init()
@@ -386,11 +383,7 @@ async function changeISO(iso) {
     await fetch(`http://${cameraIP}/set_camprop.cgi?prop=set&propname=isospeedvalue`, {
         method: 'post',
         body: `<?xml version="1.0"?><set><value>${iso}</value></set>`
-    })
-        .catch(error => console.log('error:', error))
-        .then(() => {
-            rl.close()
-        })
+    }).catch(error => console.log('error:', error))
     isospeedvalue = iso
     prompt()
 }
@@ -413,9 +406,9 @@ function inter() {
         let milsUntilStart = startDate.getTime() - currentDate.getTime()
         rl.question('Number of shots: ', async shot => {
             shots = shot
-            let oldDateObj = new Date()
-            console.log("Estimated Imaging Time: " + (shots * (shutterSpeed + 0.5)) < 60 ? ((shots * (shutterSpeed + 0.5)) + "min\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + 0.5)) * 60000))) : ((shots * (shutterSpeed + 0.5)) / 60 + "hrs\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + 0.5)) * 60000))))
-            console.log(`Waiting for ${milsUntilStart / 1000 / 60} minutes (${timeToStart})...`)
+            let oldDateObj = new Date() //temp fix the estimated gap between images                                                                                                                                    ------------
+            console.log("Estimated Imaging Time: " + (shots * (shutterSpeed + 0.5)) < 60 ? ((shots * (shutterSpeed + 0.5)) + "min\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + (shutterSpeed + 0.5))) * 1000))) : ((shots * (shutterSpeed + 0.5)) / 60 + "hrs\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + 0.5)) * 60000))))
+            console.log(`Waiting for ${Math.round((milsUntilStart / 1000 / 60) * 100.0) / 100.0} minutes (${timeToStart})...`)
             await new Promise(r => setTimeout(r, milsUntilStart));
             console.log('Starting Imaging...')
             interBar.start(shots, 0)
