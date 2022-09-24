@@ -407,11 +407,11 @@ function inter() {
         rl.question('Number of shots: ', async shot => {
             shots = shot
 
-            console.log("Estimated Imaging Time: " + (shots * (shutterSpeed + (shutterSpeed + 0.5))) + "hrs")
-            console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + ((shots * (shutterSpeed + (shutterSpeed + 0.5))) * 1000))))
-            console.log("Estimated Exposer Time: " + (shots * shutterSpeed) / 60 + "hrs")
+            console.log("Estimated Imaging Time: " + ((shots * (shutterSpeed + (shutterSpeed + 0.5)))) / 60 + "hrs")
+            console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + (((shots * (shutterSpeed + (shutterSpeed + 0.5))) / 60) * 1000))))
+            console.log("Estimated Exposer Time: " + (shots * shutterSpeed) / 60 / 60 + "hrs")
             console.log(`Waiting for ${Math.round((milsUntilStart / 1000 / 60) * 100.0) / 100.0} minutes (${timeToStart})...`)
-            
+
             await new Promise(r => setTimeout(r, milsUntilStart));
             console.log('Starting Imaging...')
             interBar.start(shots, 0)
