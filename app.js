@@ -460,7 +460,8 @@ function inter() {
                 })
                 interBar.increment()
                 interBar.update(i)
-                await new Promise(r => setTimeout(r, 500));
+                //change back to 500ms once noise reduction is turned off
+                await new Promise(r => setTimeout(r, shutterSpeed * 1000 + 500));
             }
             interBar.stop();
             prompt()
