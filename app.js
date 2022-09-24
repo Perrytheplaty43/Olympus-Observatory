@@ -37,7 +37,6 @@ async function prompt() {
         if (input.includes("shutter")) {
             changeShutterSpeed(input.substring(8))
         } else if (input.includes("inter")) {
-            firstRun = true
             inter()
         } else if (input.includes("iso")) {
             changeISO(parseInt(input.substring(4)))
@@ -464,6 +463,7 @@ function inter() {
                 interBar.update(i)
                 //change back to 500ms once noise reduction is turned off
                 await new Promise(r => setTimeout(r, shutterSpeed * 1000 + 500));
+                await init()
             }
             interBar.stop();
             prompt()
