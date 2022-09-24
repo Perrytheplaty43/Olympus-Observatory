@@ -45,7 +45,7 @@ async function prompt() {
         } else if (input.includes("iso")) {
             changeISO(parseInt(input.substring(4)))
         } else if (input.includes("info")) {
-            console.log(info())
+            console.log("Camera Settings:\nShutter Speed: " + shutterSpeed  + "\"\nISO: " + isospeedvalue)
             prompt()
         } else if (input.includes("init")) {
             init()
@@ -66,12 +66,6 @@ async function prompt() {
             prompt()
         }
     })
-}
-
-async function info() {
-    let shutter = shutterSpeed + "\""
-    
-    return "Camera Settings:\nShutter Speed: " + shutter  + "\nISO: " + isospeedvalue
 }
 
 async function init() {
