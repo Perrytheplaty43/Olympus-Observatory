@@ -15,7 +15,7 @@ async function prompt() {
     await init()
     rl.question(`Olympus-Observatory-Console>`, input => {
         if (input.includes("shutter")) {
-            changeShutterSpeed(parseInt(input.substring(8)))
+            changeShutterSpeed(input.substring(8))
         } else if (input.includes("inter")) {
             inter()
         } else if (input.includes("iso")) {
@@ -337,7 +337,7 @@ function inter() {
                     'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)',
                 }
             }).catch(error => console.log('error:', error))
-            await new Promise(r => setTimeout(r, shutterSpeed * 1000));
+            await new Promise(r => setTimeout(r, shutterSpeed * 915));
             await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
                 method: 'get',
                 headers: {
