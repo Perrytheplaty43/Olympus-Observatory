@@ -44,7 +44,7 @@ async function prompt() {
         } else if (input.includes("iso")) {
             changeISO(parseInt(input.substring(4)))
         } else if (input.includes("info")) {
-            console.log(info())
+            console.log(await info())
             prompt()
         } else if (input.includes("init")) {
             init()
@@ -92,7 +92,7 @@ async function info() {
     console.log("DEBUG::::: info 2")
     let shutter = shutterSpeed + "\""
     console.log("DEBUG::::: info 3")
-    
+
     // let isospeedvalue = "ISO" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
     //     method: 'get',
     //     headers: {
