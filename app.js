@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-
+import parser from 'xml2json'
 import readline from 'readline'
 let rl = readline.createInterface({
     input: process.stdin,
@@ -20,8 +20,36 @@ async function prompt() {
             inter()
         } else if (input.includes("iso")) {
             changeISO(parseInt(input.substring(4)))
+        } else if (input.includes("info")) {
+            console.log(info())
         }
     })
+}
+
+async function info() {
+    let fStop = "f/" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
+        method: 'get',
+        headers: {
+            'Host': cameraIP,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding': 'identity',
+            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+        }
+    }), {object: true}).desc.value)
+
+    let shutter = shutterSpeed + "\""
+
+    let isospeedvalue = "ISO" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
+        method: 'get',
+        headers: {
+            'Host': cameraIP,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding': 'identity',
+            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+        }
+    }), {object: true}).desc.value)
+
+    return "Camera Settings:\nShutter Speed: " + shutter + "\nF-Stop: " + fStop + "\nISO: " + isospeedvalue 
 }
 
 async function init() {
@@ -64,7 +92,6 @@ async function init() {
         }
     })
 
-    //props
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=takemode`, {
         method: 'get',
         headers: {
@@ -85,6 +112,7 @@ async function init() {
         }
     })
     
+    //props
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=shutspeedvalue`, {
         method: 'get',
         headers: {
@@ -306,8 +334,8 @@ async function init() {
     })
 }
 
-function changeISO(iso) {
-    fetch(`http://${cameraIP}/set_camprop.cgi?prop=set&propname=isospeedvalue`, {
+async function changeISO(iso) {
+    await fetch(`http://${cameraIP}/set_camprop.cgi?prop=set&propname=isospeedvalue`, {
         method: 'post',
         body: `<?xml version="1.0"?><set><value>${iso}</value></set>`
     })
@@ -327,6 +355,7 @@ function inter() {
     let shots
     rl.question('Number of shoots: ', async shot => {
         shots = shot
+        console.log("Estimated Imaging Time: " + (shots * (shutterSpeed + 0.5)) < 60 ? ((shots * (shutterSpeed + 0.5)) + "min\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + 0.5)) * 60000))) : ((shots * (shutterSpeed + 0.5)) / 60 + "hrs\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + 0.5)) * 60000))))
         for (let i = 1; i <= shots; i++) {
             let res = await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=starttake`, {
                 method: 'get',
@@ -352,3 +381,16 @@ function inter() {
         prompt()
     })
 }
+
+function formatDate(date) {
+    var hours = date.getHours()
+    var minutes = date.getMinutes()
+    var ampm = hours >= 12 ? 'pm' : 'am'
+    hours = hours % 12
+    hours = hours ? hours : 12
+    minutes = minutes < 10 ? '0'+minutes : minutes
+    var strTime = hours + ':' + minutes + ' ' + ampm
+    let dateStr = "Today"
+    if (new Date().getDate() != date.getDate) dateStr = "Tomorrow"
+    return (dateStr + " , " + strTime)
+  }
