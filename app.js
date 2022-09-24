@@ -22,6 +22,16 @@ async function prompt() {
             changeISO(parseInt(input.substring(4)))
         } else if (input.includes("info")) {
             console.log(info())
+            prompt()
+        } else if (input.includes("help")) {
+            console.log(
+                "'shutter [shutter speed in seconds]' : sets the shutter speed of the camera\n" +
+                "'inter'                              : you will be prompted through setting up the intervelometer\n" +
+                "'iso [ISO value]'                    : will set the ISO setting of the sensor\n" +
+                "'info'                               : will show you all the cameras settings\n" +
+                "'help'                               : will list all commands"
+            )
+            prompt()
         }
     })
 }
