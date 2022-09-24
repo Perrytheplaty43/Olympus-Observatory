@@ -11,7 +11,6 @@ let rl = readline.createInterface({
 let shutterSpeed = 10
 let cameraIP = '192.168.0.10'
 let firstRun = true
-let fStop
 let isospeedvalue
 
 let initBar = new cliProgress.SingleBar({
@@ -38,7 +37,7 @@ round the time till imaging
 async function prompt() {
     if (firstRun) await init()
     firstRun = false
-    rl.question(`Olympus-Observatory-Console>`, async input => {
+    rl.question(`Olympus-Observatory-Console>`, input => {
         if (input.includes("shutter")) {
             changeShutterSpeed(input.substring(8))
         } else if (input.includes("inter")) {
@@ -46,7 +45,7 @@ async function prompt() {
         } else if (input.includes("iso")) {
             changeISO(parseInt(input.substring(4)))
         } else if (input.includes("info")) {
-            console.log(await info())
+            console.log(info())
             prompt()
         } else if (input.includes("init")) {
             init()
@@ -70,7 +69,9 @@ async function prompt() {
 }
 
 async function info() {
-    return "Camera Settings:\nShutter Speed: " + shutterSpeed + "\"\nF-Stop: " + fStop + "\nISO: " + isospeedvalue
+    let shutter = shutterSpeed + "\""
+    
+    return "Camera Settings:\nShutter Speed: " + shutter  + "\nISO: " + isospeedvalue
 }
 
 async function init() {
@@ -130,8 +131,7 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(5)
-    
-    let fRes = await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
+    await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
         method: 'get',
         headers: {
             'Host': cameraIP,
@@ -140,8 +140,6 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    fStop = "f/" + (parser.toJson(fRes, { object: true }).desc.value)
-
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(6)
     //props
@@ -156,8 +154,7 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(7)
-
-    let isoRes = await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
+    await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
         method: 'get',
         headers: {
             'Host': cameraIP,
@@ -166,8 +163,6 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    isospeedvalue = "ISO" + (parser.toJson(isoRes, { object: true }).desc.value)
-
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(8)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=wbvalue`, {
@@ -402,6 +397,7 @@ async function changeISO(iso) {
         .then(() => {
             rl.close()
         })
+    isospeedvalue = iso
     prompt()
 }
 
