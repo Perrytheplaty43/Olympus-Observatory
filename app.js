@@ -23,12 +23,20 @@ async function prompt() {
         } else if (input.includes("info")) {
             console.log(info())
             prompt()
-        } else if (input.includes("help")) {
+        } else if (input.includes("init")) {
+            init()
+        } else if (input.includes("changeIP")) {
+            cameraIP = input.substring(9)
+            init()
+            prompt()
+        } else {
             console.log(
                 "'shutter [shutter speed in seconds]' : sets the shutter speed of the camera\n" +
                 "'inter'                              : you will be prompted through setting up the intervelometer\n" +
                 "'iso [ISO value]'                    : will set the ISO setting of the sensor\n" +
                 "'info'                               : will show you all the cameras settings\n" +
+                "'init'                               : initializes the command software\n" +
+                "'changeIP [###.###.###.###]'         : will change the pre programed ip of the camera and will reinitialize it\n" +
                 "'help'                               : will list all commands"
             )
             prompt()
@@ -45,7 +53,7 @@ async function info() {
             'Accept-Encoding': 'identity',
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
-    }), {object: true}).desc.value)
+    }), { object: true }).desc.value)
 
     let shutter = shutterSpeed + "\""
 
@@ -57,9 +65,9 @@ async function info() {
             'Accept-Encoding': 'identity',
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
-    }), {object: true}).desc.value)
+    }), { object: true }).desc.value)
 
-    return "Camera Settings:\nShutter Speed: " + shutter + "\nF-Stop: " + fStop + "\nISO: " + isospeedvalue 
+    return "Camera Settings:\nShutter Speed: " + shutter + "\nF-Stop: " + fStop + "\nISO: " + isospeedvalue
 }
 
 async function init() {
@@ -121,7 +129,7 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    
+
     //props
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=shutspeedvalue`, {
         method: 'get',
@@ -398,9 +406,9 @@ function formatDate(date) {
     var ampm = hours >= 12 ? 'pm' : 'am'
     hours = hours % 12
     hours = hours ? hours : 12
-    minutes = minutes < 10 ? '0'+minutes : minutes
+    minutes = minutes < 10 ? '0' + minutes : minutes
     var strTime = hours + ':' + minutes + ' ' + ampm
     let dateStr = "Today"
     if (new Date().getDate() != date.getDate) dateStr = "Tomorrow"
     return (dateStr + " , " + strTime)
-  }
+}
