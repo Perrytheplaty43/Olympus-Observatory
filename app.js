@@ -11,6 +11,8 @@ let rl = readline.createInterface({
 let shutterSpeed = 10
 let cameraIP = '192.168.0.10'
 let firstRun = true
+let fStop
+let isospeedvalue
 
 let initBar = new cliProgress.SingleBar({
     format: 'Initializing |' + colors.red('{bar}') + '| {percentage}% || {value}/{total} Requests',
@@ -36,7 +38,7 @@ round the time till imaging
 async function prompt() {
     if (firstRun) await init()
     firstRun = false
-    rl.question(`Olympus-Observatory-Console>`, input => {
+    rl.question(`Olympus-Observatory-Console>`, async input => {
         if (input.includes("shutter")) {
             changeShutterSpeed(input.substring(8))
         } else if (input.includes("inter")) {
@@ -68,53 +70,7 @@ async function prompt() {
 }
 
 async function info() {
-    console.log("DEBUG::::: info 1")
-    // let fStop = "f/" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
-    //     method: 'get',
-    //     headers: {
-    //         'Host': cameraIP,
-    //         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    //         'Accept-Encoding': 'identity',
-    //         'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-    //     }
-    // }), { object: true }).desc.value)
-
-    let fStop = await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
-        method: 'get',
-        headers: {
-            'Host': cameraIP,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Encoding': 'identity',
-            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-        }
-    })
-
-    console.log("DEBUG::::: info 2")
-    let shutter = shutterSpeed + "\""
-    console.log("DEBUG::::: info 3")
-
-    // let isospeedvalue = "ISO" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
-    //     method: 'get',
-    //     headers: {
-    //         'Host': cameraIP,
-    //         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    //         'Accept-Encoding': 'identity',
-    //         'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-    //     }
-    // }), { object: true }).desc.value)
-
-    let isospeedvalue = await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
-        method: 'get',
-        headers: {
-            'Host': cameraIP,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Encoding': 'identity',
-            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-        }
-    })
-
-    console.log("DEBUG::::: info 4")
-    return "Camera Settings:\nShutter Speed: " + shutter + "\nF-Stop: " + fStop + "\nISO: " + isospeedvalue
+    return "Camera Settings:\nShutter Speed: " + shutterSpeed + "\"\nF-Stop: " + fStop + "\nISO: " + isospeedvalue
 }
 
 async function init() {
@@ -174,7 +130,7 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(5)
-    await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
+    fStop = "f/" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
         method: 'get',
         headers: {
             'Host': cameraIP,
@@ -182,7 +138,7 @@ async function init() {
             'Accept-Encoding': 'identity',
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
-    })
+    }), { object: true }).desc.value)
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(6)
     //props
@@ -197,7 +153,7 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(7)
-    await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
+    isospeedvalue = "ISO" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
         method: 'get',
         headers: {
             'Host': cameraIP,
@@ -205,7 +161,7 @@ async function init() {
             'Accept-Encoding': 'identity',
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
-    })
+    }), { object: true }).desc.value)
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(8)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=wbvalue`, {
