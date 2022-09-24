@@ -29,6 +29,7 @@ let interBar = new cliProgress.SingleBar({
 prompt()
 /*
 taking more than one image doesnt work
+info breaks
 */
 async function prompt() {
     if (firstRun) await init()
@@ -65,6 +66,7 @@ async function prompt() {
 }
 
 async function info() {
+    console.log("DEBUG::::: info 1")
     let fStop = "f/" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
         method: 'get',
         headers: {
@@ -74,9 +76,9 @@ async function info() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     }), { object: true }).desc.value)
-
+    console.log("DEBUG::::: info 2")
     let shutter = shutterSpeed + "\""
-
+    console.log("DEBUG::::: info 3")
     let isospeedvalue = "ISO" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
         method: 'get',
         headers: {
@@ -86,12 +88,12 @@ async function info() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     }), { object: true }).desc.value)
-
+    console.log("DEBUG::::: info 4")
     return "Camera Settings:\nShutter Speed: " + shutter + "\nF-Stop: " + fStop + "\nISO: " + isospeedvalue
 }
 
 async function init() {
-    initBar.start(28, 0)
+    if(firstRun) initBar.start(28, 0)
     await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
@@ -101,8 +103,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(1)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(1)
     await fetch(`http://${cameraIP}/get_commandlist.cgi`, {
         method: 'get',
         headers: {
@@ -112,8 +114,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(2)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(2)
     await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
@@ -123,8 +125,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(3)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(3)
     await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=rec&lvqty=0320x0240`, {
         method: 'get',
         headers: {
@@ -134,8 +136,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(4)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(4)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=takemode`, {
         method: 'get',
         headers: {
@@ -145,8 +147,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(5)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(5)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
         method: 'get',
         headers: {
@@ -156,8 +158,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(6)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(6)
     //props
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=shutspeedvalue`, {
         method: 'get',
@@ -168,8 +170,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(7)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(7)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
         method: 'get',
         headers: {
@@ -179,8 +181,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(8)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(8)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=wbvalue`, {
         method: 'get',
         headers: {
@@ -190,8 +192,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(9)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(9)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=expcomp`, {
         method: 'get',
         headers: {
@@ -201,8 +203,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(10)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(10)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=drivemode`, {
         method: 'get',
         headers: {
@@ -212,8 +214,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(11)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(11)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=touchactiveframe`, {
         method: 'get',
         headers: {
@@ -223,8 +225,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(12)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(12)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=noisereduction`, {
         method: 'get',
         headers: {
@@ -234,8 +236,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(13)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(13)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=lowvibtime`, {
         method: 'get',
         headers: {
@@ -245,8 +247,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(14)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(14)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=bulbtimelimit`, {
         method: 'get',
         headers: {
@@ -256,8 +258,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(15)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(15)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=artfilter`, {
         method: 'get',
         headers: {
@@ -267,8 +269,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(16)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(16)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=digitaltelecon`, {
         method: 'get',
         headers: {
@@ -278,8 +280,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(17)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(17)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=colortone`, {
         method: 'get',
         headers: {
@@ -289,8 +291,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(18)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(18)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=colorphase`, {
         method: 'get',
         headers: {
@@ -300,8 +302,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(19)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(19)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=cameradrivemode`, {
         method: 'get',
         headers: {
@@ -311,8 +313,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(20)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(20)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=exposemovie`, {
         method: 'get',
         headers: {
@@ -322,8 +324,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(21)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(21)
     await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=play`, {
         method: 'get',
         headers: {
@@ -333,8 +335,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(22)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(22)
     await fetch(`http://${cameraIP}/get_caminfo.cgi`, {
         method: 'get',
         headers: {
@@ -344,8 +346,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(23)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(23)
     await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
@@ -355,8 +357,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(24)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(24)
     await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
@@ -366,8 +368,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(25)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(25)
     await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=play`, {
         method: 'get',
         headers: {
@@ -377,8 +379,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(26)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(26)
     await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=rec&lvqty=0640x0480`, {
         method: 'get',
         headers: {
@@ -388,8 +390,8 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(27)
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(27)
     await fetch(`http://${cameraIP}/exec_takemisc.cgi?com=startliveview&port=28488`, {
         method: 'get',
         headers: {
@@ -399,9 +401,9 @@ async function init() {
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
     })
-    initBar.increment()
-    initBar.update(28)
-    initBar.stop();
+    if(firstRun) initBar.increment()
+    if(firstRun) initBar.update(28)
+    if(firstRun) initBar.stop();
 }
 
 async function changeISO(iso) {
