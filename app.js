@@ -407,7 +407,7 @@ function inter() {
         rl.question('Number of shots: ', async shot => {
             shots = shot
 
-            console.log("Estimated Imaging Time: " + ((shots * (shutterSpeed + (shutterSpeed + 0.5)))) / 60 + "hrs")
+            console.log("Estimated Imaging Time: " + Math.round((((shots * (shutterSpeed + (shutterSpeed + 0.5)))) / 60 / 60) * 100.0) / 100.0 + "hrs")
             console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + (((shots * (shutterSpeed + (shutterSpeed + 0.5))) / 60) * 1000))))
             console.log("Estimated Exposer Time: " + (shots * shutterSpeed) / 60 / 60 + "hrs")
             console.log(`Waiting for ${Math.round((milsUntilStart / 1000 / 60) * 100.0) / 100.0} minutes (${timeToStart})...`)
@@ -455,6 +455,6 @@ function formatDate(date) {
     minutes = minutes < 10 ? '0' + minutes : minutes
     var strTime = hours + ':' + minutes + ' ' + ampm
     let dateStr = "Today"
-    if (new Date().getDate() != date.getDate) dateStr = "Tomorrow"
+    if (new Date().getDate() != date.getDate()) dateStr = "Tomorrow"
     return (dateStr + " , " + strTime)
 }
