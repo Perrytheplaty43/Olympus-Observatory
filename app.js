@@ -10,6 +10,7 @@ let rl = readline.createInterface({
 
 let shutterSpeed = 10
 let cameraIP = '192.168.0.10'
+let firstRun = true
 
 let initBar = new cliProgress.SingleBar({
     format: 'Initializing |' + colors.red('{bar}') + '| {percentage}% || {value}/{total} Requests',
@@ -28,7 +29,8 @@ let interBar = new cliProgress.SingleBar({
 prompt()
 
 async function prompt() {
-    await init()
+    if (firstRun) await init()
+    firstRun = false
     rl.question(`Olympus-Observatory-Console>`, input => {
         if (input.includes("shutter")) {
             changeShutterSpeed(input.substring(8))
@@ -419,6 +421,7 @@ function changeShutterSpeed(speed) {
 
 function inter() {
     let shots
+    //TODO: actually implement 'now'
     rl.question("Time to start hh:mm ('now' to start now): ", async timeToStart => {
         if (timeToStart.length != 5) {
             console.log("Invalid time.")
@@ -429,6 +432,7 @@ function inter() {
         let milsUntilStart = startDate.getTime() - currentDate.getTime()
         rl.question('Number of shots: ', async shot => {
             shots = shot
+            let oldDateObj = new Date()
             console.log("Estimated Imaging Time: " + (shots * (shutterSpeed + 0.5)) < 60 ? ((shots * (shutterSpeed + 0.5)) + "min\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + 0.5)) * 60000))) : ((shots * (shutterSpeed + 0.5)) / 60 + "hrs\nEstimated End Of Imaging: " + formatDate(new Date(oldDateObj.getTime() + (shots * (shutterSpeed + 0.5)) * 60000))))
             console.log(`Waiting for ${milsUntilStart / 1000 / 60} minutes (${timeToStart})...`)
             await new Promise(r => setTimeout(r, milsUntilStart));
