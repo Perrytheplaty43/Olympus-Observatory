@@ -27,7 +27,9 @@ let interBar = new cliProgress.SingleBar({
 }, cliProgress.Presets.shades_grey);
 
 prompt()
-
+/*
+taking more than one image doesnt work
+*/
 async function prompt() {
     if (firstRun) await init()
     firstRun = false
@@ -35,6 +37,7 @@ async function prompt() {
         if (input.includes("shutter")) {
             changeShutterSpeed(input.substring(8))
         } else if (input.includes("inter")) {
+            firstRun = true
             inter()
         } else if (input.includes("iso")) {
             changeISO(parseInt(input.substring(4)))
@@ -428,8 +431,7 @@ function inter() {
             prompt()
         }
         let currentDate = new Date()
-        let startDate = new Date(`${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getFullYear()} ${timeToStart}`)
-        console.log("DEBUGING::::: " + `${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getFullYear()} ${timeToStart}`)
+        let startDate = new Date(`${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()} ${timeToStart}`)
         let milsUntilStart = startDate.getTime() - currentDate.getTime()
         rl.question('Number of shots: ', async shot => {
             shots = shot
