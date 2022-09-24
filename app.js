@@ -130,7 +130,8 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(5)
-    fStop = "f/" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
+    
+    let fRes = await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=focalvalue`, {
         method: 'get',
         headers: {
             'Host': cameraIP,
@@ -138,7 +139,9 @@ async function init() {
             'Accept-Encoding': 'identity',
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
-    }), { object: true }).desc.value)
+    })
+    fStop = "f/" + (parser.toJson(fRes, { object: true }).desc.value)
+
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(6)
     //props
@@ -153,7 +156,8 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(7)
-    isospeedvalue = "ISO" + (parser.toJson(await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
+
+    let isoRes = await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=isospeedvalue`, {
         method: 'get',
         headers: {
             'Host': cameraIP,
@@ -161,7 +165,9 @@ async function init() {
             'Accept-Encoding': 'identity',
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
-    }), { object: true }).desc.value)
+    })
+    isospeedvalue = "ISO" + (parser.toJson(isoRes, { object: true }).desc.value)
+
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(8)
     await fetch(`http://${cameraIP}/get_camprop.cgi?prop=desc&propname=wbvalue`, {
