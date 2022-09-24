@@ -428,8 +428,8 @@ function inter() {
             prompt()
         }
         let currentDate = new Date()
-        let startDate = new Date(`${currentDate.getMonth}/${currentDate.getDate}/${currentDate.getFullYear} ${timeToStart}`)
-        console.log("DEBUGING::::: " + `${currentDate.getMonth}/${currentDate.getDate}/${currentDate.getFullYear} ${timeToStart}`)
+        let startDate = new Date(`${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getFullYear()} ${timeToStart}`)
+        console.log("DEBUGING::::: " + `${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getFullYear()} ${timeToStart}`)
         let milsUntilStart = startDate.getTime() - currentDate.getTime()
         rl.question('Number of shots: ', async shot => {
             shots = shot
