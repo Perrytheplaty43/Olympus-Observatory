@@ -413,8 +413,8 @@ function inter() {
         rl.question('Number of shots: ', async shot => {
             shots = shot
 
-            console.log("Estimated Imaging Time: " + Math.round((((shots * (shutterSpeed + (shutterSpeed + 0.5)))) / 60 / 60) * 100.0) / 100.0 + "hrs")
-            console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + (((shots * (shutterSpeed + (shutterSpeed + 0.5))) / 60) * 1000))))
+            console.log("Estimated Imaging Time: " + Math.round((((shots * 4) / 60 / 60) * 100.0) / 100.0 + "hrs"))
+            console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + (((shots * 4) / 60) * 1000))))
             console.log("Estimated Exposer Time: " + Math.round(((shots * shutterSpeed) / 60 / 60) * 100.0) / 100.0 + "hrs")
             console.log(`Waiting for ${Math.round((milsUntilStart / 1000 / 60) * 100.0) / 100.0} minutes (${timeToStart})...`)
 
@@ -431,7 +431,7 @@ function inter() {
                         'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)',
                     }
                 }).catch(error => console.log('error:', error))
-                await new Promise(r => setTimeout(r, shutterSpeed * 915));
+                await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
                 await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
                     method: 'get',
                     headers: {
@@ -442,9 +442,8 @@ function inter() {
                 })
                 interBar.increment()
                 interBar.update(i)
-                imgNumber++
                 //change back to 500ms once noise reduction is turned off
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 200));
                 await init()
             }
             interBar.stop();
