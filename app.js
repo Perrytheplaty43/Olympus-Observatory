@@ -63,6 +63,7 @@ async function prompt() {
                 "'info'                               : will show you all the cameras settings\n" +
                 "'init'                               : initializes the command software\n" +
                 "'changeIP [###.###.###.###]'         : will change the pre programed ip of the camera and will reinitialize it\n" +
+                "'exit'                               : will restore the camera's settings to their original position and will exit the console\n" +
                 "'help'                               : will list all commands"
             )
             prompt()
