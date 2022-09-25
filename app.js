@@ -413,8 +413,8 @@ function inter() {
         rl.question('Number of shots: ', async shot => {
             shots = shot
 
-            console.log("Estimated Imaging Time: " + Math.round((((shots * 4) / 60 / 60) * 100.0) / 100.0 + "hrs"))
-            console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + (((shots * 4) / 60) * 1000))))
+            console.log("Estimated Imaging Time: " + Math.round(((shots * (shutterSpeed + 4)) / 60 / 60) * 100.0) / 100.0 + "hrs")
+            console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + (((shots * (shutterSpeed + 4)) / 60) * 1000))))
             console.log("Estimated Exposer Time: " + Math.round(((shots * shutterSpeed) / 60 / 60) * 100.0) / 100.0 + "hrs")
             console.log(`Waiting for ${Math.round((milsUntilStart / 1000 / 60) * 100.0) / 100.0} minutes (${timeToStart})...`)
 
@@ -443,7 +443,7 @@ function inter() {
                 interBar.increment()
                 interBar.update(i)
                 //change back to 500ms once noise reduction is turned off
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise(r => setTimeout(r, 4000));
                 await init()
             }
             interBar.stop();
