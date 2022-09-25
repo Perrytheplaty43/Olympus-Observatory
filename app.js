@@ -474,7 +474,7 @@ function inter() {
                 imgNumber++
                 console.log(`\nView Image ${i} Here: http://${cameraIP}/DCIM/${folderName}/_${imgNumber}.jpg`)
                 //change back to 500ms once noise reduction is turned off
-                await new Promise(r => setTimeout(r, shutterSpeed * 1000 + 500));
+                await new Promise(r => setTimeout(r, 500));
                 await init()
             }
             interBar.stop();
