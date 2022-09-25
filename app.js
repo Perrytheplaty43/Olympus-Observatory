@@ -12,6 +12,8 @@ let shutterSpeed = 10
 let cameraIP = '192.168.0.10'
 let firstRun = true
 let isospeedvalue
+let imgNumber
+let folderName
 
 let initBar = new cliProgress.SingleBar({
     format: 'Initializing |' + colors.red('{bar}') + '| {percentage}% || {value}/{total} Requests',
@@ -32,7 +34,10 @@ prompt()
 estimated time of imagine finish is broken
 */
 async function prompt() {
-    if (firstRun) await init()
+    if (firstRun) {
+        await init()
+        imageViewSetup()
+    }
     firstRun = false
     rl.question(`Olympus-Observatory-Console>`, input => {
         if (input.includes("shutter")) {
@@ -62,6 +67,17 @@ async function prompt() {
             )
             prompt()
         }
+    })
+}
+
+function imageViewSetup() {
+    rl.question('Enter folder name and most recent image name seperated by a comma [111OLYMP,_1111111]: ', inputName => {
+        inputName = inputName.split(",")
+        imgNumber = parseInt(inputName[1].substring(1))
+        folderName = inputName[0]
+        firstRun = false
+        rl.close()
+        prompt()
     })
 }
 
@@ -436,6 +452,8 @@ function inter() {
                 })
                 interBar.increment()
                 interBar.update(i)
+                imgNumber++
+                console.log(`View Image ${i} Here: http://${cameraIP}/DCIM/${folderName}/_${imgNumber}.jpg`)
                 //change back to 500ms once noise reduction is turned off
                 await new Promise(r => setTimeout(r, shutterSpeed * 1000 + 500));
                 await init()
