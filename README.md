@@ -1,6 +1,10 @@
 # Olympus-Observatory
 Software to remotely control a OM-D EM10 MKIII. Should be compatile with any Olympus Camera that supports the OI.Share app. This program gives the user the ability to remotly control their camera's shutter speed, intrevelometer, and ISO. This program is primairaly aimed toward astrophotography but is not limited to it. This program can run on any computer which supports NodeJS.
 
+# How to Run
+To run Olympus Observatory install NodeJS and run: <br>
+`node Olympus-Observatory.js`
+
 # List of Commands
 `shutter [shutter speed in seconds or fraction of a second]`<br>
 This command will set the shutter speed of the camera for later use through the intravelometer.<br><br>
