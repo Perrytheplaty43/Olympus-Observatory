@@ -1,8 +1,8 @@
 import fetch from 'node-fetch'
-import parser from 'xml2json'
 import readline from 'readline'
 import cliProgress from 'cli-progress'
 import colors from 'ansi-colors'
+import { exit } from 'process';
 let rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -30,9 +30,7 @@ let interBar = new cliProgress.SingleBar({
 }, cliProgress.Presets.shades_grey);
 
 prompt()
-/*
-estimated time of imagine finish is broken
-*/
+
 async function prompt() {
     if (firstRun) {
         await init()
@@ -47,7 +45,7 @@ async function prompt() {
         } else if (input.includes("iso")) {
             changeISO(parseInt(input.substring(4)))
         } else if (input.includes("info")) {
-            console.log("Camera Settings:\nShutter Speed: " + shutterSpeed  + "\"\nISO: " + isospeedvalue)
+            console.log("Camera Settings:\nShutter Speed: " + shutterSpeed + "\"\nISO: " + isospeedvalue)
             prompt()
         } else if (input.includes("init")) {
             init()
@@ -55,6 +53,8 @@ async function prompt() {
             cameraIP = input.substring(9)
             init()
             prompt()
+        } else if (input.includes("exit")) {
+            close()
         } else {
             console.log(
                 "'shutter [shutter speed in seconds]' : sets the shutter speed of the camera\n" +
@@ -70,19 +70,27 @@ async function prompt() {
     })
 }
 
+async function close() {
+    console.log("Closing Connecting and Exiting...")
+    await fetch(`http://${cameraIP}/set_camprop.cgi?prop=set&propname=noisereduction`, {
+        method: 'post',
+        body: `<?xml version="1.0"?><set><value>auto</value></set>`
+    }).catch(error => console.log('error:', error))
+    exit()
+}
+
 function imageViewSetup() {
     rl.question('Enter folder name and most recent image name seperated by a comma [111OLYMP,_1111111]: ', inputName => {
         inputName = inputName.split(",")
         imgNumber = parseInt(inputName[1].substring(1))
         folderName = inputName[0]
         firstRun = false
-        rl.close()
         prompt()
     })
 }
 
 async function init() {
-    if (firstRun) initBar.start(28, 0)
+    if (firstRun) initBar.start(29, 0)
     await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
@@ -392,6 +400,12 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(28)
+    await fetch(`http://${cameraIP}/set_camprop.cgi?prop=set&propname=noisereduction`, {
+        method: 'post',
+        body: `<?xml version="1.0"?><set><value>off</value></set>`
+    }).catch(error => console.log('error:', error))
+    if (firstRun) initBar.increment()
+    if (firstRun) initBar.update(29)
     if (firstRun) initBar.stop();
 }
 
@@ -411,15 +425,19 @@ function changeShutterSpeed(speed) {
 
 function inter() {
     let shots
-    //TODO: actually implement 'now'
     rl.question("Time to start hh:mm ('now' to start now): ", async timeToStart => {
-        if (timeToStart.length != 5) {
+        if (timeToStart.length != 5 && timeToStart != 'now') {
             console.log("Invalid time.")
             prompt()
         }
-        let currentDate = new Date()
-        let startDate = new Date(`${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()} ${timeToStart}`)
-        let milsUntilStart = startDate.getTime() - currentDate.getTime()
+        let milsUntilStart
+        if (timeToStart != 'now') {
+            let currentDate = new Date()
+            let startDate = new Date(`${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()} ${timeToStart}`)
+            milsUntilStart = startDate.getTime() - currentDate.getTime()
+        } else {
+            milsUntilStart = 0
+        }
         rl.question('Number of shots: ', async shot => {
             shots = shot
 
@@ -441,7 +459,7 @@ function inter() {
                         'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)',
                     }
                 }).catch(error => console.log('error:', error))
-                await new Promise(r => setTimeout(r, shutterSpeed * 915));
+                await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
                 await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
                     method: 'get',
                     headers: {
@@ -453,7 +471,7 @@ function inter() {
                 interBar.increment()
                 interBar.update(i)
                 imgNumber++
-                console.log(`View Image ${i} Here: http://${cameraIP}/DCIM/${folderName}/_${imgNumber}.jpg`)
+                console.log(`\nView Image ${i} Here: http://${cameraIP}/DCIM/${folderName}/_${imgNumber}.jpg`)
                 //change back to 500ms once noise reduction is turned off
                 await new Promise(r => setTimeout(r, shutterSpeed * 1000 + 500));
                 await init()
