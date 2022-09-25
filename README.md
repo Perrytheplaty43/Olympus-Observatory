@@ -1,180 +1,20 @@
 # Olympus-Observatory
-Software to remotely control a OM-D EM10 MKIII
+Software to remotely control a OM-D EM10 MKIII. Should be compatile with any Olympus Camera that supports the OI.Share app. This program gives the user the ability to remotly control their camera's shutter speed, intrevelometer, and ISO. This program is primairaly aimed toward astrophotography but is not limited to it. This program can run on any computer which supports NodeJS.
 
-## Reverse-engineered APIs
-### Exposer change:
-`19537	27.029172	192.168.0.3	192.168.0.10	TCP	78	52415 → 80 [SYN, ECN, CWR] Seq=0 Win=65535 Len=0 MSS=1460 WS=32 TSval=486530460 TSecr=0 SACK_PERM=1`<br>
-```
-0000   e8 e8 b7 f6 58 fd 10 93 e9 0e d2 fe 08 00 45 00   ....X.........E.
-0010   00 40 00 00 40 00 40 06 b9 5a c0 a8 00 03 c0 a8   .@..@.@..Z......
-0020   00 0a cc bf 00 50 c4 69 ff 48 00 00 00 00 b0 c2   .....P.i.H......
-0030   ff ff 29 81 00 00 02 04 05 b4 01 03 03 05 01 01   ..).............
-0040   08 0a 1c ff dd 9c 00 00 00 00 04 02 00 00         ..............
-```
-`19538	27.031192	192.168.0.10	192.168.0.3	TCP	62	80 → 52415 [SYN, ACK] Seq=0 Ack=1 Win=32768 Len=0 MSS=1460 SACK_PERM=1` <br>
-```
-0000   10 93 e9 0e d2 fe e8 e8 b7 f6 58 fd 08 00 45 00   ..........X...E.
-0010   00 30 a2 40 00 00 40 06 57 2a c0 a8 00 0a c0 a8   .0.@..@.W*......
-0020   00 03 00 50 cc bf 00 02 3a a5 c4 69 ff 49 70 12   ...P....:..i.Ip.
-0030   80 00 b6 46 00 00 02 04 05 b4 01 01 04 02         ...F..........
-```
-`19539	27.031329	192.168.0.3	192.168.0.10	TCP	54	52415 → 80 [ACK] Seq=1 Ack=1 Win=65535 Len=0`<by>
-```
-0000   e8 e8 b7 f6 58 fd 10 93 e9 0e d2 fe 08 00 45 00   ....X.........E.
-0010   00 28 00 00 40 00 40 06 b9 72 c0 a8 00 03 c0 a8   .(..@.@..r......
-0020   00 0a cc bf 00 50 c4 69 ff 49 00 02 3a a6 50 10   .....P.i.I..:.P.
-0030   ff ff 63 0b 00 00                                 ..c...
-```
-`19540	27.034535	192.168.0.3	192.168.0.10	TCP	379	52415 → 80 [PSH, ACK] Seq=1 Ack=1 Win=65535 Len=325 [TCP segment of a reassembled PDU]`
-```
-0000   e8 e8 b7 f6 58 fd 10 93 e9 0e d2 fe 08 00 45 00   ....X.........E.
-0010   01 6d 00 00 40 00 40 06 b8 2d c0 a8 00 03 c0 a8   .m..@.@..-......
-0020   00 0a cc bf 00 50 c4 69 ff 49 00 02 3a a6 50 18   .....P.i.I..:.P.
-0030   ff ff a5 35 00 00 50 4f 53 54 20 2f 73 65 74 5f   ...5..POST /set_
-0040   63 61 6d 70 72 6f 70 2e 63 67 69 3f 70 72 6f 70   camprop.cgi?prop
-0050   3d 73 65 74 26 70 72 6f 70 6e 61 6d 65 3d 73 68   =set&propname=sh
-0060   75 74 73 70 65 65 64 76 61 6c 75 65 20 48 54 54   utspeedvalue HTT
-0070   50 2f 31 2e 30 0d 0a 43 6f 6e 6e 65 63 74 69 6f   P/1.0..Connectio
-0080   6e 3a 20 6b 65 65 70 2d 61 6c 69 76 65 0d 0a 43   n: keep-alive..C
-0090   6f 6e 74 65 6e 74 2d 54 79 70 65 3a 20 74 65 78   ontent-Type: tex
-00a0   74 2f 78 6d 6c 3b 20 63 68 61 72 73 65 74 3d 75   t/xml; charset=u
-00b0   73 2d 61 73 63 69 69 0d 0a 43 6f 6e 74 65 6e 74   s-ascii..Content
-00c0   2d 4c 65 6e 67 74 68 3a 20 34 39 0d 0a 48 6f 73   -Length: 49..Hos
-00d0   74 3a 20 31 39 32 2e 31 36 38 2e 30 2e 31 30 0d   t: 192.168.0.10.
-00e0   0a 41 63 63 65 70 74 3a 20 74 65 78 74 2f 68 74   .Accept: text/ht
-00f0   6d 6c 2c 61 70 70 6c 69 63 61 74 69 6f 6e 2f 78   ml,application/x
-0100   68 74 6d 6c 2b 78 6d 6c 2c 61 70 70 6c 69 63 61   html+xml,applica
-0110   74 69 6f 6e 2f 78 6d 6c 3b 71 3d 30 2e 39 2c 2a   tion/xml;q=0.9,*
-0120   2f 2a 3b 71 3d 30 2e 38 0d 0a 41 63 63 65 70 74   /*;q=0.8..Accept
-0130   2d 45 6e 63 6f 64 69 6e 67 3a 20 69 64 65 6e 74   -Encoding: ident
-0140   69 74 79 0d 0a 55 73 65 72 2d 41 67 65 6e 74 3a   ity..User-Agent:
-0150   20 4d 6f 7a 69 6c 6c 61 2f 33 2e 30 20 28 63 6f    Mozilla/3.0 (co
-0160   6d 70 61 74 69 62 6c 65 3b 20 49 6e 64 79 20 4c   mpatible; Indy L
-0170   69 62 72 61 72 79 29 0d 0a 0d 0a                  ibrary)....
-```
-`19541	27.036587	192.168.0.10	192.168.0.3	TCP	60	80 → 52415 [ACK] Seq=1 Ack=326 Win=32443 Len=0`
-```
-0000   10 93 e9 0e d2 fe e8 e8 b7 f6 58 fd 08 00 45 00   ..........X...E.
-0010   00 28 a2 41 00 00 40 06 57 31 c0 a8 00 0a c0 a8   .(.A..@.W1......
-0020   00 03 00 50 cc bf 00 02 3a a6 c4 6a 00 8e 50 10   ...P....:..j..P.
-0030   7e bb e3 0a 00 00 ec 52 01 71 fe 34               ~......R.q.4
-```
-`19542	27.036654	192.168.0.3	192.168.0.10	HTTP/XML	103	POST /set_camprop.cgi?prop=set&propname=shutspeedvalue HTTP/1.0 `
-```
-0000   e8 e8 b7 f6 58 fd 10 93 e9 0e d2 fe 08 00 45 00   ....X.........E.
-0010   00 59 00 00 40 00 40 06 b9 41 c0 a8 00 03 c0 a8   .Y..@.@..A......
-0020   00 0a cc bf 00 50 c4 6a 00 8e 00 02 3a a6 50 18   .....P.j....:.P.
-0030   ff ff 5c 93 00 00 3c 3f 78 6d 6c 20 76 65 72 73   ..\...<?xml vers
-0040   69 6f 6e 3d 22 31 2e 30 22 3f 3e 3c 73 65 74 3e   ion="1.0"?><set>
-0050   3c 76 61 6c 75 65 3e 36 22 3c 2f 76 61 6c 75 65   <value>6"</value
-0060   3e 3c 2f 73 65 74 3e                              ></set>
-```
-`19543	27.038833	192.168.0.10	192.168.0.3	TCP	60	80 → 52415 [ACK] Seq=1 Ack=375 Win=32719 Len=0`
-```
-0000   10 93 e9 0e d2 fe e8 e8 b7 f6 58 fd 08 00 45 00   ..........X...E.
-0010   00 28 a2 42 00 00 40 06 57 30 c0 a8 00 0a c0 a8   .(.B..@.W0......
-0020   00 03 00 50 cc bf 00 02 3a a6 c4 6a 00 bf 50 10   ...P....:..j..P.
-0030   7f cf e1 c5 00 00 d0 01 9a 05 21 0e               ..........!.
-```
-===End===
-### Video Frame
-Port: 18543 -> 28488
-`19545	27.040805	192.168.0.10	192.168.0.3	UDP	1514	18543 → 28488 Len=1472`
-```
-0000   10 93 e9 0e d2 fe e8 e8 b7 f6 58 fd 08 00 45 00   ..........X...E.
-0010   05 dc a2 44 00 00 40 11 51 6f c0 a8 00 0a c0 a8   ...D..@.Qo......
-0020   00 03 48 6f 6f 48 05 c8 b9 ed 80 60 b7 dd 01 4b   ..HooH.....`...K
-0030   8e e8 00 00 00 00 0a 14 1e 05 05 05 07 09 0f 1b   ................
-0040   26 04 06 07 09 0f 17 21 28 07 08 0a 0c 17 1b 24   &......!(......$
-0050   29 0a 0b 11 15 1c 22 2b 2f 11 18 18 24 2e 2b 33   )....."+/...$.+3
-0060   2a 15 19 1d 21 2b 2f 32 2b 19 17 17 1a 20 26 2a   *...!+/2+.... &*
-0070   29 01 07 08 0a 14 29 29 29 29 08 09 0b 1c 29 29   ).....))))....))
-0080   29 29 0a 0b 17 29 29 29 29 29 14 1c 29 29 29 29   ))...)))))..))))
-0090   29 29 29 29 29 29 29 29 29 29 29 29 29 29 29 29   ))))))))))))))))
-00a0   29 29 29 29 29 29 29 29 29 29 29 29 29 29 29 29   ))))))))))))))))
-00b0   29 29 ff c0 00 11 08 01 e0 02 80 03 01 21 00 02   ))...........!..
-00c0   11 01 03 11 01 ff c4 01 a2 00 00 01 05 01 01 01   ................
-00d0   01 01 01 00 00 00 00 00 00 00 00 01 02 03 04 05   ................
-00e0   06 07 08 09 0a 0b 10 00 02 01 03 03 02 04 03 05   ................
-00f0   05 04 04 00 00 01 7d 01 02 03 00 04 11 05 12 21   ......}........!
-0100   31 41 06 13 51 61 07 22 71 14 32 81 91 a1 08 23   1A..Qa."q.2....#
-0110   42 b1 c1 15 52 d1 f0 24 33 62 72 82 09 0a 16 17   B...R..$3br.....
-0120   18 19 1a 25 26 27 28 29 2a 34 35 36 37 38 39 3a   ...%&'()*456789:
-0130   43 44 45 46 47 48 49 4a 53 54 55 56 57 58 59 5a   CDEFGHIJSTUVWXYZ
-0140   63 64 65 66 67 68 69 6a 73 74 75 76 77 78 79 7a   cdefghijstuvwxyz
-0150   83 84 85 86 87 88 89 8a 92 93 94 95 96 97 98 99   ................
-0160   9a a2 a3 a4 a5 a6 a7 a8 a9 aa b2 b3 b4 b5 b6 b7   ................
-0170   b8 b9 ba c2 c3 c4 c5 c6 c7 c8 c9 ca d2 d3 d4 d5   ................
-0180   d6 d7 d8 d9 da e1 e2 e3 e4 e5 e6 e7 e8 e9 ea f1   ................
-0190   f2 f3 f4 f5 f6 f7 f8 f9 fa 01 00 03 01 01 01 01   ................
-01a0   01 01 01 01 01 00 00 00 00 00 00 01 02 03 04 05   ................
-01b0   06 07 08 09 0a 0b 11 00 02 01 02 04 04 03 04 07   ................
-01c0   05 04 04 00 01 02 77 00 01 02 03 11 04 05 21 31   ......w.......!1
-01d0   06 12 41 51 07 61 71 13 22 32 81 08 14 42 91 a1   ..AQ.aq."2...B..
-01e0   b1 c1 09 23 33 52 f0 15 62 72 d1 0a 16 24 34 e1   ...#3R..br...$4.
-01f0   25 f1 17 18 19 1a 26 27 28 29 2a 35 36 37 38 39   %.....&'()*56789
-0200   3a 43 44 45 46 47 48 49 4a 53 54 55 56 57 58 59   :CDEFGHIJSTUVWXY
-0210   5a 63 64 65 66 67 68 69 6a 73 74 75 76 77 78 79   Zcdefghijstuvwxy
-0220   7a 82 83 84 85 86 87 88 89 8a 92 93 94 95 96 97   z...............
-0230   98 99 9a a2 a3 a4 a5 a6 a7 a8 a9 aa b2 b3 b4 b5   ................
-0240   b6 b7 b8 b9 ba c2 c3 c4 c5 c6 c7 c8 c9 ca d2 d3   ................
-0250   d4 d5 d6 d7 d8 d9 da e2 e3 e4 e5 e6 e7 e8 e9 ea   ................
-0260   f2 f3 f4 f5 f6 f7 f8 f9 fa ff da 00 0c 03 01 00   ................
-0270   02 11 03 11 00 3f 00 f9 ca 8a a0 0a 5a 60 1c d2   .....?......Z`..
-0280   e3 d3 eb 40 01 3e d4 66 80 16 92 80 16 8c 50 01   ...@.>.f......P.
-0290   f4 3f 5a 5c 71 d7 dc 53 01 07 d6 8c 7a 52 01 45   .?Z\q..S....zR.E
-02a0   3b 3f 4f 5a 68 05 fa 0a 5a 60 1c 51 9a 62 1a 4f   ;?OZh...Z`.Q.b.O
-02b0   d6 9c 87 d7 ea 3e b4 98 c5 1e f9 a5 fc 68 01 3e   .....>.......h.>
-02c0   94 f5 fc 69 88 90 9e 38 fa 57 65 e1 13 b0 42 47   ...i...8.We...BG
-02d0   19 63 13 1f a8 a8 66 a8 ee 2f 60 8d 63 9b 72 2b   .c....f../`.c.r+
-02e0   64 8b 95 cf 62 bc f0 7d b3 5c e4 99 cf 05 98 1e   d...b..}.\......
-02f0   0e 07 fb 6b e9 f4 ae a8 33 22 4b 60 03 0c c4 4f   ...k....3"K`...O
-0300   21 87 3f ed 31 fe 95 71 c6 63 e5 57 8c 10 7f e0   !.?.1..q.c.W....
-0310   23 fc 68 02 a6 d3 83 b9 d7 a1 38 03 a6 55 47 6f   #.h.......8..UGo
-0320   4a b0 bd 4e d7 62 39 61 ec 7c ce f9 a8 90 ca 13   J..N.b9a.|......
-0330   26 db d5 ce 39 22 52 07 a9 35 6b 47 5c cf cf 6c   &...9"R..5kG\..l
-0340   b7 e3 9a f1 aa ee 7d 65 27 ee ff 00 db a7 4f 18   ......}e'.....O.
-0350   fc 2a d2 0f c3 bd 6a 7c e3 25 4c 57 98 78 9c e7   .*....j|.%LW.x..
-0360   50 93 a7 5c 7e 4a 2a 8e 8c 36 e3 6c 87 3d ab af   P..\~J*..6.l.=..
-0370   f0 c8 3e 77 4c fa 7b 9a 93 d8 9e c7 5e 43 0f bc   ..>wL.{.....^C..
-0380   a4 7a 83 52 40 fb 58 60 f4 e6 ac f9 a6 6f c3 a8   .z.R@.X`.....o..
-0390   37 ad 5f b5 bf 05 ba d6 88 86 6e c4 e1 87 eb 52   7._.......n....R
-03a0   8a a2 42 8a 00 29 28 00 a4 a0 02 8a 00 29 0d 00   ..B..)(......)..
-03b0   25 25 02 1b 48 68 01 0d 30 d0 03 0d 36 90 10 4f   %%..Hh..0...6..O
-03c0   50 e2 80 1a d5 cf f8 d5 b6 e9 93 63 fb b8 fd 69   P..........c...i
-03d0   17 03 c0 2d 46 5b b7 ad 6f d8 8a 83 ea 30 c6 ac   ...-F[..o....0..
-03e0   19 cf eb 57 8f dd aa 3d 03 a8 f8 7a a4 bb fd 2b   ...W...=...z...+
-03f0   d0 6d 87 cd 5a c0 f9 4c cb e2 65 93 55 e5 1f 35   .m..Z..L..e.U..5
-0400   68 79 67 c3 94 73 50 6c 2e 3d a9 73 4c 02 81 8a   hyg..sPl.=.sL...
-0410   00 5c 0a 4a 40 2f 34 53 00 14 1a 00 40 69 c3 af   .\.J@/4S....@i..
-0420   e9 4c 04 23 14 bf fe aa 43 0a 51 9f 4a 62 1c 29   .L.#....C.Q.Jb.)
-0430   6a 80 3f c9 a3 1f e3 40 0d e6 80 6a 58 12 f5 eb   j.?....@...jX...
-0440   f8 d2 1f 7a 68 04 fa 53 d0 1f ad 34 22 62 46 39   ...zh..S...4"bF9
-0450   04 d7 63 e1 b5 ff 00 47 8b 07 fe 5a 71 59 48 dd   ..c....G...ZqYH.
-0460   1d fe bc de 5c 7c 28 39 c3 9f c1 4f f2 c5 72 87   ....\|(9...O..r.
-0470   05 c7 2d d7 93 e9 fb cf fe b5 75 53 31 64 b0 81   ..-.......uS1d..
-0480   b7 fd 44 83 a3 83 eb 88 db ad 68 21 f9 48 70 38   ..D.......h!.Hp8
-0490   1f 2e 3b 0d a9 d6 a8 45 29 63 27 a1 55 18 20 01   ..;....E)c'.U. .
-04a0   df 38 ff 00 0a 53 b8 48 70 ae 57 3e 5a ff 00 df   .8...S.Hp.W>Z...
-04b0   c2 7a d4 b2 91 0d da 62 ee 3c a8 19 c6 31 ec f5   .z.....b.<...1..
-04c0   6f 45 51 e7 1c f6 1c 7f df 55 e4 55 dc fa 6a 6f   oEQ......U.U..jo
-04d0   dc f9 33 a3 8f ff 00 ae 2a ca d5 1e 0b 24 8f e9   ..3.....*....$..
-04e0   5e 5d e2 23 9b f9 7f de c5 33 a3 0b b8 eb 1e bd   ^].#.....3......
-04f0   2b b1 f0 bf fa e1 9f 5e 28 47 b3 53 63 bd 69 a3   +......^(G.Sc.i.
-0500   2d 89 15 59 8f ce 01 1d 40 f7 a4 6b 48 8f dc 49   -..Y....@..kH..I
-0510   23 3d 47 d6 b6 b1 f3 2c a4 66 58 c1 f3 64 44 51   #=G....,.fX..dDQ
-0520   f3 33 b9 c6 d0 3d 4d 60 dd fc 43 f0 ed 99 f9 6e   .3...=M`..C....n
-0530   2e 2f 5c 74 4b 75 ee 3f db 34 24 4b 1f a5 7c 6e   ./\tKu.?.4$K..|n
-0540   b2 69 71 75 e1 9b c8 e0 fb a6 74 90 12 3f e0 1f   .iqu......t..?..
-0550   fd 7a f4 9d 0f c6 9e 17 d5 71 fd 9d ad 5b ac a7   .z.......q...[..
-0560   fe 5d 67 f9 48 3f 43 fe 35 ad 88 3a 3d ac 3a 8e   .]g.H?C.5..:=.:.
-0570   3a 83 eb f8 d2 54 80 65 7b ba 8f a9 a8 9e e2 d9   :....T.e{.......
-0580   3e fc e9 f8 53 01 d6 b3 db 4e 4f 97 21 e3 da a6   >...S....NO.!...
-0590   96 22 bd c1 14 01 15 14 80 29 28 01 29 08 a0 04   .".......)(.)...
-05a0   a4 34 08 69 a6 9a 43 18 c2 9b 48 44 13 75 a8 4d   .4.i..C...HD.u.M
-05b0   20 1a 45 73 1f 10 18 ae 93 2e 3d 36 7e 6c 29 9a    .Es......=6~l).
-05c0   40 f0 7b 31 cf 3f 8d 74 36 42 b3 3e a7 0c 8d 58   @.{1.?.t6B.>...X
-05d0   07 f8 1a ba e3 e5 e3 e9 54 77 9d 6f c3 d5 fb ff   ........Tw.o....
-05e0   00 91 35 de 5b f5 ad 60 7c 96                     ..5.[..`|.
-```
-===End===
+# List of Commands
+`shutter [shutter speed in seconds or fraction of a second]`<br>
+This command will set the shutter speed of the camera for later use through the intravelometer.<br><br>
+`inter`<br>
+This command will prompt you through the inizialization of the intervelometer and will start it depanding on what the user inputs.<br><br>
+`iso [ISO value]`<br>
+This command will adjust the ISO setting of the camera's sensor.<br><br>
+`info`<br>
+This command will print to the console the camera's current known settings.<br><br>
+`init`<br>
+This command will reinitilize the software and should only be used if you or your camera were to run into any issue.<br><br>
+`changeIP [###.###.###.###]`<br>
+This command will change what the program thinks the IP of your camera is and will reinitilaize the program.<br><br>
+`exit`<br>
+The exit command will restore the noise reduction setting back to auto which through the initialziaiton process was switched to `off` for the purposses of astrophotograpy. This command will also exit the console/program.<br><br>
+`help`<br>
+The help command will display all available commands and their functions.
