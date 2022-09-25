@@ -53,8 +53,6 @@ async function prompt() {
             cameraIP = input.substring(9)
             init()
             prompt()
-        } else if (input.includes("exit")) {
-            close()
         } else {
             console.log(
                 "'shutter [shutter speed in seconds]' : sets the shutter speed of the camera\n" +
@@ -63,7 +61,6 @@ async function prompt() {
                 "'info'                               : will show you all the cameras settings\n" +
                 "'init'                               : initializes the command software\n" +
                 "'changeIP [###.###.###.###]'         : will change the pre programed ip of the camera and will reinitialize it\n" +
-                "'exit'                               : will restore the camera's settings to their original position and will exit the console\n" +
                 "'help'                               : will list all commands"
             )
             prompt()
@@ -468,7 +465,7 @@ function inter() {
                 imgNumber++
                 console.log(`\nView Image ${i} Here: http://${cameraIP}/DCIM/${folderName}/_${imgNumber}.jpg`)
                 //change back to 500ms once noise reduction is turned off
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, shutterSpeed * 1000 + 500));
                 await init()
             }
             interBar.stop();
