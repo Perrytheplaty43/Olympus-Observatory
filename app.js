@@ -91,7 +91,7 @@ function imageViewSetup() {
 }
 
 async function init() {
-    if (firstRun) initBar.start(29, 0)
+    if (firstRun) initBar.start(28, 0)
     await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
@@ -401,12 +401,6 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(28)
-    await fetch(`http://${cameraIP}/set_camprop.cgi?prop=set&propname=noisereduction`, {
-        method: 'post',
-        body: `<?xml version="1.0"?><set><value>off</value></set>`
-    }).catch(error => console.log('error:', error))
-    if (firstRun) initBar.increment()
-    if (firstRun) initBar.update(29)
     if (firstRun) initBar.stop();
 }
 
