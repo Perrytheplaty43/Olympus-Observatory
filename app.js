@@ -409,7 +409,7 @@ function inter() {
 
             console.log("Estimated Imaging Time: " + Math.round((((shots * (shutterSpeed + (shutterSpeed + 0.5)))) / 60 / 60) * 100.0) / 100.0 + "hrs")
             console.log("Estimated End Of Imaging: " + formatDate(new Date(new Date().getTime() + (((shots * (shutterSpeed + (shutterSpeed + 0.5))) / 60) * 1000))))
-            console.log("Estimated Exposer Time: " + (shots * shutterSpeed) / 60 / 60 + "hrs")
+            console.log("Estimated Exposer Time: " + Math.round(((shots * shutterSpeed) / 60 / 60) * 100.0) / 100.0 + "hrs")
             console.log(`Waiting for ${Math.round((milsUntilStart / 1000 / 60) * 100.0) / 100.0} minutes (${timeToStart})...`)
 
             await new Promise(r => setTimeout(r, milsUntilStart));
