@@ -76,6 +76,9 @@ async function init() {
             'Accept-Encoding': 'identity',
             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
         }
+    }).catch(() => {
+        console.log("Init Error")
+        prompt()
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(1)
@@ -424,6 +427,7 @@ function inter() {
             for (let i = 1; i <= shots; i++) {
                 let res = await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=starttake`, {
                     method: 'get',
+                    signal: AbortSignal.timeout(5000),
                     headers: {
                         'Host': cameraIP,
                         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -444,7 +448,7 @@ function inter() {
                 interBar.update(i)
                 //change back to 500ms once noise reduction is turned off
                 await new Promise(r => setTimeout(r, 4100));
-                await init()
+                if (firstRun) await init()
             }
             interBar.stop();
             prompt()
