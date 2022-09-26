@@ -427,7 +427,11 @@ function inter() {
             let controller
             for (let i = 1; i <= shots; i++) {
                 controller = new AbortController()
-                let timeoutId = setTimeout(() => controller.abort(), 2000)
+                let isShutterOpenSuccessful = true
+                let timeoutId = setTimeout(() => {
+                    controller.abort()
+                    isShutterOpenSuccessful = false
+                }, 2000)
                 let res = await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=starttake`, {
                     method: 'get',
                     signal: controller.signal,
@@ -438,23 +442,27 @@ function inter() {
                         'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)',
                     }
                 }).catch(error => console.log('error:', error))
-                await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
                 clearTimeout(timeoutId)
-                controller = new AbortController()
-                await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
-                    method: 'get',
-                    signal: controller.signal,
-                    headers: {
-                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                        'Accept-Encoding': 'identity',
-                        'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-                    }
-                })
-                interBar.increment()
-                interBar.update(i)
-                //change back to 500ms once noise reduction is turned off
-                await new Promise(r => setTimeout(r, 4100));
-                if (firstRun) await init()
+                if (isShutterOpenSuccessful) {
+                    await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
+                    await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
+                        method: 'get',
+                        signal: controller.signal,
+                        headers: {
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                            'Accept-Encoding': 'identity',
+                            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+                        }
+                    })
+                    interBar.increment()
+                    interBar.update(i)
+                    //change back to 500ms once noise reduction is turned off
+                    await new Promise(r => setTimeout(r, 4100));
+                    if (firstRun) await init()
+                } else {
+                    i--
+                    continue
+                }
             }
             interBar.stop();
             prompt()
