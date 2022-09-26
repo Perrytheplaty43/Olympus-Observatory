@@ -460,6 +460,7 @@ function inter() {
                     await new Promise(r => setTimeout(r, 4100));
                     if (firstRun) await init()
                 } else {
+                    await init()
                     i--
                     continue
                 }
