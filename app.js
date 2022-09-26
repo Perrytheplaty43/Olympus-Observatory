@@ -424,10 +424,13 @@ function inter() {
             await new Promise(r => setTimeout(r, milsUntilStart));
             console.log('Starting Imaging...')
             interBar.start(shots, 0)
+            let controller
             for (let i = 1; i <= shots; i++) {
+                controller = new AbortController()
+                let timeoutId = setTimeout(() => controller.abort(), 2000)
                 let res = await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=starttake`, {
                     method: 'get',
-                    signal: AbortSignal.timeout(5000),
+                    signal: controller.signal,
                     headers: {
                         'Host': cameraIP,
                         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -436,8 +439,11 @@ function inter() {
                     }
                 }).catch(error => console.log('error:', error))
                 await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
+                clearTimeout(timeoutId)
+                controller = new AbortController()
                 await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
                     method: 'get',
+                    signal: controller.signal,
                     headers: {
                         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                         'Accept-Encoding': 'identity',
