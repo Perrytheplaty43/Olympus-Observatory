@@ -423,15 +423,15 @@ function inter() {
                 clearTimeout(timeoutId)
                 if (isShutterOpenSuccessful) {
                     await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
-                    await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndrelease`, {
-                        method: 'get',
-                        signal: controller.signal,
-                        headers: {
-                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                            'Accept-Encoding': 'identity',
-                            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-                        }
-                    })
+                    // await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndrelease`, {
+                    //     method: 'get',
+                    //     signal: controller.signal,
+                    //     headers: {
+                    //         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    //         'Accept-Encoding': 'identity',
+                    //         'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+                    //     }
+                    // })
                     await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndpush`, {
                         method: 'get',
                         signal: controller.signal,
@@ -444,7 +444,7 @@ function inter() {
                     interBar.increment()
                     interBar.update(i)
                     //change back to 500ms once noise reduction is turned off
-                    await new Promise(r => setTimeout(r, 4000));
+                    await new Promise(r => setTimeout(r, 4200));
                     if (firstRun) await init()
                 } else {
                     await init()
