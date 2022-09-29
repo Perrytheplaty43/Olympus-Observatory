@@ -67,7 +67,7 @@ async function prompt() {
 }
 
 async function init() {
-    if (firstRun) initBar.start(28, 0)
+    if (firstRun) initBar.start(26, 0)
     await fetch(`http://${cameraIP}/get_connectmode.cgi`, {
         method: 'get',
         headers: {
@@ -347,7 +347,7 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(25)
-    await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=play`, {
+    await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=shutter`, {
         method: 'get',
         headers: {
             'Host': cameraIP,
@@ -358,28 +358,6 @@ async function init() {
     })
     if (firstRun) initBar.increment()
     if (firstRun) initBar.update(26)
-    await fetch(`http://${cameraIP}/switch_cammode.cgi?mode=rec&lvqty=0640x0480`, {
-        method: 'get',
-        headers: {
-            'Host': cameraIP,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Encoding': 'identity',
-            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-        }
-    })
-    if (firstRun) initBar.increment()
-    if (firstRun) initBar.update(27)
-    await fetch(`http://${cameraIP}/exec_takemisc.cgi?com=startliveview&port=28488`, {
-        method: 'get',
-        headers: {
-            'Host': cameraIP,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Encoding': 'identity',
-            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
-        }
-    })
-    if (firstRun) initBar.increment()
-    if (firstRun) initBar.update(28)
     if (firstRun) initBar.stop();
 }
 
@@ -432,7 +410,7 @@ function inter() {
                     controller.abort()
                     isShutterOpenSuccessful = false
                 }, 2000)
-                let res = await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=starttake`, {
+                let res = await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndpush`, {
                     method: 'get',
                     signal: controller.signal,
                     headers: {
@@ -445,7 +423,7 @@ function inter() {
                 clearTimeout(timeoutId)
                 if (isShutterOpenSuccessful) {
                     await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
-                    await fetch(`http://${cameraIP}/exec_takemotion.cgi?com=stoptake`, {
+                    await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndrelease`, {
                         method: 'get',
                         signal: controller.signal,
                         headers: {
@@ -457,7 +435,7 @@ function inter() {
                     interBar.increment()
                     interBar.update(i)
                     //change back to 500ms once noise reduction is turned off
-                    await new Promise(r => setTimeout(r, 4100));
+                    await new Promise(r => setTimeout(r, 500));
                     if (firstRun) await init()
                 } else {
                     await init()
