@@ -423,7 +423,7 @@ function inter() {
                 clearTimeout(timeoutId)
                 if (isShutterOpenSuccessful) {
                     await new Promise(r => setTimeout(r, shutterSpeed * 1000 - 85));
-                    await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndpush`, {
+                    await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndrelease`, {
                         method: 'get',
                         signal: controller.signal,
                         headers: {
