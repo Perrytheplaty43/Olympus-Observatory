@@ -444,7 +444,7 @@ function inter() {
                     interBar.increment()
                     interBar.update(i)
                     //change back to 500ms once noise reduction is turned off
-                    await new Promise(r => setTimeout(r, 5000));
+                    await new Promise(r => setTimeout(r, 500));
                     if (firstRun) await init()
                 } else {
                     await init()
