@@ -432,6 +432,15 @@ function inter() {
                             'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
                         }
                     })
+                    await fetch(`http://${cameraIP}/exec_shutter.cgi?com=1st2ndpush`, {
+                        method: 'get',
+                        signal: controller.signal,
+                        headers: {
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                            'Accept-Encoding': 'identity',
+                            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)'
+                        }
+                    })
                     interBar.increment()
                     interBar.update(i)
                     //change back to 500ms once noise reduction is turned off
